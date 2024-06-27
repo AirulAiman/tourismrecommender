@@ -2,6 +2,8 @@ import pickle
 import streamlit as st
 import pandas as pd  # Import pandas
 import requests
+import path
+import sys
 
 st.header("Tourism Recommendation System Using Machine Learning")
 
