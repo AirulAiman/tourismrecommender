@@ -8,9 +8,8 @@ from pathlib import Path
 st.header("Tourism Recommendation System Using Machine Learning")
 
 
-cosine_sim_df, all_tourism = pkl_path
 
-pkl_path = Path(__file__).parents[1] / 'model/contentbased.pkl'
+all_tourism, cosine_sim_df = Path(__file__).parents[1] / 'model/contentbased.pkl'
 
 # Get the list of titles
 tour = all_tourism['Title'].values
