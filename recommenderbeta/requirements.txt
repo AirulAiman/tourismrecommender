@@ -77,4 +77,3 @@ watchdog==4.0.1
 wcwidth==0.2.13
 Werkzeug==3.0.3
 wrapt==1.16.0
-pickle
