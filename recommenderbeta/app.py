@@ -7,7 +7,7 @@ st.header("Tourism Recommendation System Using Machine Learning")
 
 
 dir = path.Path(__file__).abspath()
-sys.append.path(dir.parent.parent)
+sys.path.append(dir.parent.parent)
 
 # load model
 path_to_model = './model/contentbased.pkl'
