@@ -4,14 +4,23 @@ import pandas as pd  # Import pandas
 import requests
 import sys
 from pathlib import Path
+import os
 
 st.header("Tourism Recommendation System Using Machine Learning")
 
+# Get the absolute path to the pickle file
+file_path = os.path.join(os.getcwd(), 'model', 'contentbased.pkl')
 
+# Load the pickle file
+with open(file_path, 'rb') as f:
+    all_tourism = pickle.load(f)
 
-all_tourism = pickle.load(open('model/contentbased.pkl'))
+# Get the absolute path to the pickle file
+file_path = os.path.join(os.getcwd(), 'model', 'contentbased.pkl')
 
-cosine_sim_df = pickle.load(open('model/contentbased.pkl'))
+# Load the pickle file
+with open(file_path, 'rb') as f:
+    cosine_sim_df = pickle.load(f)
 
 # Get the list of titles
 tour = all_tourism['Title'].values
