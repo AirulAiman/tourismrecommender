@@ -8,20 +8,20 @@ import os
 
 st.header("Tourism Recommendation System Using Machine Learning")
 
-# Get the absolute path to the pickle file
-file_path = os.path.join(os.getcwd(), 'model', 'contentbased.pkl')
+current_dir = os.path.dirname(__file__)  # Get the current directory of app.py
+file_path = os.path.join(current_dir, 'contentbased.pkl')
 
 # Load the pickle file
 with open(file_path, 'rb') as f:
     all_tourism = pickle.load(f)
 
-# Get the absolute path to the pickle file
-file_path = os.path.join(os.getcwd(), 'model', 'contentbased.pkl')
+current_dir = os.path.dirname(__file__)  # Get the current directory of app.py
+file_path = os.path.join(current_dir, 'contentbased.pkl')
 
 # Load the pickle file
 with open(file_path, 'rb') as f:
     cosine_sim_df = pickle.load(f)
-
+    
 # Get the list of titles
 tour = all_tourism['Title'].values
 
