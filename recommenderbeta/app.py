@@ -6,7 +6,7 @@ import requests
 st.header("Tourism Recommendation System Using Machine Learning")
 
 # Load the content-based model data
-cosine_sim_df, all_tourism = pickle.load(open('github/users/airulaiman/recommenderbeta/model/contentbased.pkl', 'rb'))
+cosine_sim_df, all_tourism = pickle.load(open('recommenderbeta/model/contentbased.pkl', 'rb'))
 
 # Get the list of titles
 tour = all_tourism['Title'].values
