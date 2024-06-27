@@ -7,15 +7,7 @@ import sys
 st.header("Tourism Recommendation System Using Machine Learning")
 
 
-dir = path.Path(__file__).abspath()
-sys.path.append(dir.parent.parent)
-
-# load model
-path_to_model = './model/contentbased.pkl'
-
-
-with open(path_to_model, 'rb') as file:
-    model = pickle.load(file)
+cosine_sim_df, all_tourism = pickle.load(open('model/contentbased.pkl', 'rb'))
 
 # Get the list of titles
 tour = all_tourism['Title'].values
