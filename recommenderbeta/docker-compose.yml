@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  touristrecommender:
+    image: touristrecommender
+    build:
+      context: .
+      dockerfile: ./Dockerfile
