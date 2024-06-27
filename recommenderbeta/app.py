@@ -3,11 +3,12 @@ import streamlit as st
 import pandas as pd  # Import pandas
 import requests
 import sys
+from pathlib import Path
 
 st.header("Tourism Recommendation System Using Machine Learning")
 
 
-cosine_sim_df, all_tourism = pickle.load(open('model/contentbased.pkl', 'rb'))
+pkl_path = Path(__file__).parents[1] / 'model/contentbased.pkl'
 
 # Get the list of titles
 tour = all_tourism['Title'].values
@@ -16,7 +17,7 @@ tour = all_tourism['Title'].values
 selected_tour = st.selectbox('Type Location', tour)
 
 # Function to recommend similar places
-def tourism_recommendations(place_name, similarity_data=cosine_sim_df, items=all_tourism[['Title', 'Genre', 'Address', 'Rating', 'GoogleMapsLink']], k=5):
+def tourism_recommendations(place_name, similarity_data=cosine_sim_df, items=all_tourism[['Title', 'Genre', 'Rating', 'GoogleMapsLink']], k=5):
     if place_name not in similarity_data.columns:
         st.write(f"Place name '{place_name}' not found in similarity data.")
         return pd.DataFrame()
