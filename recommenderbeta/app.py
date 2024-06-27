@@ -2,26 +2,12 @@ import pickle
 import streamlit as st
 import pandas as pd  # Import pandas
 import requests
-import sys
-from pathlib import Path
-import os
 
 st.header("Tourism Recommendation System Using Machine Learning")
 
-current_dir = os.path.dirname(__file__)  # Get the current directory of app.py
-file_path = os.path.join(current_dir, 'contentbased.pkl')
+# Load the content-based model data
+cosine_sim_df, all_tourism = pickle.load(open('model/contentbased.pkl', 'rb'))
 
-# Load the pickle file
-with open(file_path, 'rb') as f:
-    all_tourism = pickle.load(f)
-
-current_dir = os.path.dirname(__file__)  # Get the current directory of app.py
-file_path = os.path.join(current_dir, 'contentbased.pkl')
-
-# Load the pickle file
-with open(file_path, 'rb') as f:
-    cosine_sim_df = pickle.load(f)
-    
 # Get the list of titles
 tour = all_tourism['Title'].values
 
@@ -50,7 +36,8 @@ if selected_tour:
         st.markdown(f"### {row['Title']}")
         st.write(f"**Genre:** {row['Genre']}")
         st.write(f"**Rating:** {row['Rating']}")
-        st.write(f"linkLocation: {row['GoogleMapsLink']}")
-        # Embed Google Maps using an iframe
-        st.markdown(f'<iframe src="{row["GoogleMapsLink"]}" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>', unsafe_allow_html=True)
+        st.write(f"**Google Maps Link:** {row['GoogleMapsLink']}")
+
+        # Embed Google Maps using an iframe with responsive design
+        st.markdown(f'<iframe src="{row["GoogleMapsLink"]}" width="100%" height="300" style="border:0;" allowfullscreen="" loading="lazy"></iframe>', unsafe_allow_html=True)
 
