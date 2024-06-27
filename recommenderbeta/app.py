@@ -7,7 +7,7 @@ st.header("Tourism Recommendation System Using Machine Learning")
 
 
 # Load the saved data and model
-with open('contentbased.pkl', 'rb') as f:
+with open('model/contentbased.pkl', 'rb') as f:
     cosine_sim_df, all_tourism = pickle.load(f)
 
 # Get the list of titles
