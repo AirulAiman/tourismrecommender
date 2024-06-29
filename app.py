@@ -1,43 +1,93 @@
 import pickle
 import streamlit as st
-import pandas as pd  # Import pandas
-import requests
+import pandas as pd
+from fuzzywuzzy import process
 
-st.header("Tourism Recommendation System Using Machine Learning")
+# Function to load model data
+@st.cache(allow_output_mutation=True)
+def load_model_data(file_path):
+    with open(file_path, 'rb') as f:
+        cosine_sim_df, all_tourism = pickle.load(f)
+    return cosine_sim_df, all_tourism
 
-# Load the content-based model data
-cosine_sim_df, all_tourism = pickle.load(open('model/contentbased.pkl', 'rb'))
-
-# Get the list of titles
-tour = all_tourism['Title'].values
-
-# Create a selectbox for user input
-selected_tour = st.selectbox('Type Location', tour)
-
-# Function to recommend similar places
-def tourism_recommendations(place_name, similarity_data=cosine_sim_df, items=all_tourism[['Title', 'Genre', 'Rating', 'GoogleMapsLink']], k=5):
-    if place_name not in similarity_data.columns:
-        st.write(f"Place name '{place_name}' not found in similarity data.")
+# Function to recommend similar places using fuzzy matching
+def tourism_recommendations(place_name, similarity_data, items, k=20):
+    closest_match, score = process.extractOne(place_name, similarity_data.columns)
+    
+    if closest_match not in similarity_data.columns:
+        st.warning(f"Place name '{closest_match}' not found in similarity data.")
         return pd.DataFrame()
     
-    similarities = similarity_data.loc[:, place_name]
-    if len(similarities) < k + 1:
-        k = len(similarities) - 1
+    similarities = similarity_data.loc[:, closest_match]
+    k = min(k, len(similarities) - 1)
 
-    index = similarities.to_numpy().argpartition(range(-1, -k, -1))
-    closest = similarity_data.columns[index[-1:-(k+2):-1]]
-    closest = closest.drop(place_name, errors='ignore')
-    return pd.DataFrame(closest).merge(items).head(k)
+    index = similarities.argsort()[-k-1:-1][::-1]
+    closest = similarity_data.columns[index]
+    closest = closest.drop(closest_match, errors='ignore')
+    return pd.DataFrame(closest).merge(items)
 
-# Display the recommendations if a tour is selected
-if selected_tour:
-    recommendations = tourism_recommendations(selected_tour)
-    for index, row in recommendations.iterrows():
-        st.markdown(f"### {row['Title']}")
-        st.write(f"**Genre:** {row['Genre']}")
-        st.write(f"**Rating:** {row['Rating']}")
-        st.write(f"**Google Maps Link:** {row['GoogleMapsLink']}")
+# Function to convert numerical rating to star representation
+def stars_from_rating(rating):
+    full_stars = int(rating)
+    half_star = (rating - full_stars) >= 0.5
+    empty_stars = 5 - full_stars - (1 if half_star else 0)
 
-        # Embed Google Maps using an iframe with responsive design
-        st.markdown(f'<iframe src="{row["GoogleMapsLink"]}" width="100%" height="300" style="border:0;" allowfullscreen="" loading="lazy"></iframe>', unsafe_allow_html=True)
+    stars = '★' * full_stars + '½' * (half_star) + '☆' * empty_stars
+    return stars
 
+# Main function to run the Streamlit app
+def main():
+    st.title("Tourism Recommendation System")
+    st.sidebar.title("Search Options")
+
+    # Load model data
+    cosine_sim_df, all_tourism = load_model_data('model/contentbased.pkl')
+
+    # User input for location
+    selected_tour = st.sidebar.text_input("Enter Location", "")
+
+    if selected_tour:
+        recommendations = tourism_recommendations(selected_tour, cosine_sim_df, all_tourism[['Title', 'Genre', 'Rating', 'GoogleMapsLink']])
+        st.subheader(f"Top {len(recommendations)} Recommendations for '{selected_tour}'")
+        
+        for index, row in recommendations.iterrows():
+            st.markdown(f"### {row['Title']}")
+            st.write(f"**Genre:** {row['Genre']}")
+            st.write(f"**Rating:** {row['Rating']} ({stars_from_rating(row['Rating'])})")
+
+            # Display Google Maps link as a button
+            st.markdown(f'<a href="{row["GoogleMapsLink"]}" target="_blank" class="button">View Map</a>', unsafe_allow_html=True)
+
+            # Display star rating using FontAwesome
+            st.markdown("""
+            <style>
+            .stars {
+                color: gold;
+                font-size: large;
+                margin-top: 10px;
+            }
+            .button {
+                background-color: #4CAF50;
+                border: none;
+                color: white;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 16px;
+                margin-top: 10px;
+                padding: 10px 20px;
+                border-radius: 5px;
+                cursor: pointer;
+                transition: background-color 0.3s;
+            }
+            .button:hover {
+                background-color: #45a049;
+            }
+            </style>
+            """, unsafe_allow_html=True)
+
+            # Display star rating
+            st.markdown(f'<p class="stars">{stars_from_rating(row["Rating"])}</p>', unsafe_allow_html=True)
+
+if __name__ == "__main__":
+    main()
