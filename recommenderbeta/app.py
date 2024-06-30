@@ -39,12 +39,16 @@ def stars_from_rating(rating):
 def main():
     st.title("Tourism Recommendation System")
     st.sidebar.title("Search Options")
+    st.sidebar.text("Input any location full name")
+    st.sidebar.text(" Keyword that you want to visit")
+    st.sidebar.text("(Eg. Hiking , Western , Hotel ")
+    st.sidebar.text(", Resort etc)")
 
     # Load model data
     cosine_sim_df, all_tourism = load_model_data('model/contentbased.pkl')
 
     # User input for location
-    selected_tour = st.sidebar.text_input("Enter Location", "")
+    selected_tour = st.sidebar.text_input("Enter Location or type of place that you want to visit", "")
 
     if selected_tour:
         recommendations = tourism_recommendations(selected_tour, cosine_sim_df, all_tourism[['Title', 'Genre', 'Rating', 'GoogleMapsLink']])
