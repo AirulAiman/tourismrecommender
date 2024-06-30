@@ -47,6 +47,7 @@ def main():
     # User input for location
     selected_tour = st.text_input("Enter Location or type of place that you want to visit", "")
     
+   
 
     if selected_tour:
         recommendations = tourism_recommendations(selected_tour, cosine_sim_df, all_tourism[['Title', 'Genre', 'Rating', 'GoogleMapsLink']])
