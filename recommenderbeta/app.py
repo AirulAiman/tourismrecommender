@@ -4,7 +4,7 @@ import pandas as pd
 from fuzzywuzzy import process
 
 # Function to load model data
-@st.cache(allow_output_mutation=True)
+@st.cache_data(allow_output_mutation=True)
 def load_model_data(file_path):
     with open(file_path, 'rb') as f:
         cosine_sim_df, all_tourism = pickle.load(f)
